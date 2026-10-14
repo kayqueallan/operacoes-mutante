@@ -1,0 +1,211 @@
+// test/operacoes.mutantes.test.js
+// Testes adicionados para "matar" os mutantes que sobreviveram (Survived)
+// ou que não eram cobertos por nenhum teste (NoCoverage) na primeira execução.
+
+const ops = require('../src/operacoes');
+
+describe('Mutantes: mensagens de erro (StringLiteral)', () => {
+  test('divisao por zero lança erro com a mensagem exata', () => {
+    expect(() => ops.divisao(10, 0)).toThrow('Divisão por zero não é permitida.');
+  });
+
+  test('raizQuadrada de negativo lança erro com a mensagem exata', () => {
+    expect(() => ops.raizQuadrada(-4)).toThrow(
+      'Não é possível calcular a raiz quadrada de um número negativo.'
+    );
+  });
+
+  test('fatorial de negativo lança erro com a mensagem exata', () => {
+    expect(() => ops.fatorial(-1)).toThrow('Fatorial não é definido para números negativos.');
+  });
+
+  test('inverso de zero lança erro com a mensagem exata', () => {
+    expect(() => ops.inverso(0)).toThrow('Não é possível inverter o número zero.');
+  });
+
+  test('maximoArray vazio lança erro com mensagem', () => {
+    expect(() => ops.maximoArray([])).toThrow(/Array vazio/);
+    expect(() => ops.maximoArray([])).toThrow(/máximo/);
+  });
+
+  test('minimoArray vazio lança erro com mensagem', () => {
+    expect(() => ops.minimoArray([])).toThrow(/Array vazio/);
+    expect(() => ops.minimoArray([])).toThrow(/mínimo/);
+  });
+
+  test('medianaArray vazio lança erro com mensagem', () => {
+    expect(() => ops.medianaArray([])).toThrow(/Array vazio/);
+    expect(() => ops.medianaArray([])).toThrow(/mediana/);
+  });
+});
+
+describe('Mutantes: raizQuadrada e fatorial (limites)', () => {
+  test('raizQuadrada(0) é 0 e não lança erro (n < 0, não n <= 0)', () => {
+    expect(() => ops.raizQuadrada(0)).not.toThrow();
+    expect(ops.raizQuadrada(0)).toBe(0);
+  });
+
+  test('raizQuadrada de negativo realmente lança erro', () => {
+    expect(() => ops.raizQuadrada(-1)).toThrow();
+  });
+
+  test('fatorial(0) e fatorial(1) valem 1 e não lançam erro', () => {
+    expect(() => ops.fatorial(0)).not.toThrow();
+    expect(ops.fatorial(0)).toBe(1);
+    expect(ops.fatorial(1)).toBe(1);
+  });
+
+  test('fatorial de negativo realmente lança erro', () => {
+    expect(() => ops.fatorial(-5)).toThrow();
+  });
+
+  test('fatorial(5) é 120', () => {
+    expect(ops.fatorial(5)).toBe(120);
+  });
+});
+
+describe('Mutantes: arrays', () => {
+  test('mediaArray de array vazio retorna 0 (e não NaN)', () => {
+    expect(ops.mediaArray([])).toBe(0);
+  });
+
+  test('mediaArray de array com elementos', () => {
+    expect(ops.mediaArray([2, 4, 6])).toBe(4);
+  });
+
+  test('produtoArray de array vazio é 1', () => {
+    expect(ops.produtoArray([])).toBe(1);
+  });
+
+  test('produtoArray de array com elementos', () => {
+    expect(ops.produtoArray([2, 3, 4])).toBe(24);
+  });
+});
+
+describe('Mutantes: isPar e isImpar', () => {
+  test('isPar retorna false para ímpar e true para par', () => {
+    expect(ops.isPar(3)).toBe(false);
+    expect(ops.isPar(4)).toBe(true);
+    expect(ops.isPar(0)).toBe(true);
+  });
+
+  test('isImpar retorna false para par e true para ímpar', () => {
+    expect(ops.isImpar(2)).toBe(false);
+    expect(ops.isImpar(0)).toBe(false);
+    expect(ops.isImpar(3)).toBe(true);
+    expect(ops.isImpar(-3)).toBe(true);
+  });
+});
+
+describe('Mutantes: isPrimo', () => {
+  test('0, 1 e negativos não são primos', () => {
+    expect(ops.isPrimo(1)).toBe(false);
+    expect(ops.isPrimo(0)).toBe(false);
+    expect(ops.isPrimo(-7)).toBe(false);
+  });
+
+  test('2, 3, 5 e 7 são primos', () => {
+    expect(ops.isPrimo(2)).toBe(true);
+    expect(ops.isPrimo(3)).toBe(true);
+    expect(ops.isPrimo(5)).toBe(true);
+    expect(ops.isPrimo(7)).toBe(true);
+  });
+
+  test('compostos não são primos', () => {
+    expect(ops.isPrimo(4)).toBe(false);
+    expect(ops.isPrimo(9)).toBe(false);
+    expect(ops.isPrimo(15)).toBe(false);
+  });
+});
+
+describe('Mutantes: clamp', () => {
+  test('valor abaixo do mínimo retorna o mínimo', () => {
+    expect(ops.clamp(-5, 0, 10)).toBe(0);
+  });
+
+  test('valor acima do máximo retorna o máximo', () => {
+    expect(ops.clamp(15, 0, 10)).toBe(10);
+  });
+
+  test('valor dentro do intervalo é mantido', () => {
+    expect(ops.clamp(5, 0, 10)).toBe(5);
+  });
+
+  test('valores exatamente nos limites são mantidos', () => {
+    expect(ops.clamp(0, 0, 10)).toBe(0);
+    expect(ops.clamp(10, 0, 10)).toBe(10);
+  });
+});
+
+describe('Mutantes: isDivisivel', () => {
+  test('retorna true quando divisível e false quando não', () => {
+    expect(ops.isDivisivel(10, 5)).toBe(true);
+    expect(ops.isDivisivel(10, 3)).toBe(false);
+  });
+});
+
+describe('Mutantes: conversão de temperatura', () => {
+  test('celsiusParaFahrenheit com valor diferente de zero', () => {
+    expect(ops.celsiusParaFahrenheit(0)).toBe(32);
+    expect(ops.celsiusParaFahrenheit(100)).toBe(212);
+    expect(ops.celsiusParaFahrenheit(-40)).toBe(-40);
+  });
+
+  test('fahrenheitParaCelsius com valor diferente de 32', () => {
+    expect(ops.fahrenheitParaCelsius(32)).toBe(0);
+    expect(ops.fahrenheitParaCelsius(212)).toBe(100);
+    expect(ops.fahrenheitParaCelsius(-40)).toBe(-40);
+  });
+});
+
+describe('Mutantes: inverso', () => {
+  test('inverso de número diferente de zero', () => {
+    expect(ops.inverso(4)).toBe(0.25);
+    expect(ops.inverso(-2)).toBe(-0.5);
+  });
+});
+
+describe('Mutantes: comparações', () => {
+  test('isMaiorQue: caso falso e caso de igualdade', () => {
+    expect(ops.isMaiorQue(5, 3)).toBe(true);
+    expect(ops.isMaiorQue(3, 5)).toBe(false);
+    expect(ops.isMaiorQue(5, 5)).toBe(false);
+  });
+
+  test('isMenorQue: caso falso e caso de igualdade', () => {
+    expect(ops.isMenorQue(3, 5)).toBe(true);
+    expect(ops.isMenorQue(5, 3)).toBe(false);
+    expect(ops.isMenorQue(5, 5)).toBe(false);
+  });
+
+  test('isEqual: caso falso', () => {
+    expect(ops.isEqual(5, 5)).toBe(true);
+    expect(ops.isEqual(5, 6)).toBe(false);
+  });
+});
+
+describe('Mutantes: medianaArray', () => {
+  test('array ímpar DESORDENADO exige ordenação correta', () => {
+    expect(ops.medianaArray([5, 3, 1, 4, 2])).toBe(3);
+    expect(ops.medianaArray([3, 1, 2])).toBe(2);
+  });
+
+  test('array par retorna a média dos dois elementos centrais', () => {
+    expect(ops.medianaArray([1, 2, 3, 4])).toBe(2.5);
+  });
+
+  test('array par DESORDENADO', () => {
+    expect(ops.medianaArray([4, 1, 3, 2])).toBe(2.5);
+    expect(ops.medianaArray([10, 2, 8, 4])).toBe(6);
+  });
+
+  test('array com um único elemento', () => {
+    expect(ops.medianaArray([7])).toBe(7);
+  });
+
+  test('não altera o array original', () => {
+    const original = [3, 1, 2];
+    ops.medianaArray(original);
+    expect(original).toEqual([3, 1, 2]);
+  });
+});
